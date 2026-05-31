@@ -198,7 +198,7 @@
       <div class="mt-6 pt-4 border-t">
         <div class="flex flex-wrap items-center gap-4">
           <span class="text-xs font-medium text-muted-foreground">Leyenda:</span>
-          @for (cond of condiciones; track cond.codigo) {
+          @for (cond of condiciones(); track cond.codigo) {
             <div class="flex items-center gap-1">
               <div
                 class="w-3 h-3 rounded-sm"
@@ -219,7 +219,7 @@
     <div class="bg-card border rounded-xl p-6 w-full max-w-lg mx-4 shadow-lg max-h-[80vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-foreground">
-          Pieza {{ selectedPieza()?.id }}
+          Pieza {{ selectedPieza()?.pieza?.id }}
         </h2>
         <button
           (click)="closeModal()"
@@ -257,7 +257,7 @@
           <div class="space-y-2">
             <label class="text-sm font-medium text-foreground">Condición / Hallazgo</label>
             <div class="grid grid-cols-2 gap-2">
-              @for (cond of condiciones; track cond.codigo) {
+              @for (cond of condiciones(); track cond.codigo) {
                 <button
                   (click)="estadoSeleccionado.set(cond.codigo)"
                   class="flex items-center gap-2 px-3 py-2 rounded-md border text-sm font-medium transition-colors text-left"
@@ -309,12 +309,12 @@
       }
 
       <!-- Hallazgos existentes para esta pieza -->
-      @if (selectedPieza(); as pieza) {
-        @if (getFilteredHallazgos(pieza.id).length > 0) {
+      @if (selectedPieza(); as sp) {
+        @if (getFilteredHallazgos(sp.pieza.id).length > 0) {
           <div class="mt-6 pt-4 border-t">
             <h3 class="text-sm font-medium text-foreground mb-3">Hallazgos registrados</h3>
             <div class="space-y-2">
-              @for (h of getFilteredHallazgos(pieza.id); track h.id) {
+              @for (h of getFilteredHallazgos(sp.pieza.id); track h.id) {
                 <div class="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                   <div class="flex items-center gap-3">
                     <div

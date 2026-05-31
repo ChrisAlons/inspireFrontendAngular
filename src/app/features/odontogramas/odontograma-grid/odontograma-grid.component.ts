@@ -45,10 +45,21 @@ export class OdontogramaGridComponent implements OnInit, OnDestroy {
   selectedPieza = signal<PiezaConHallazgo | null>(null);
   selectedCara = signal<string | null>(null);
   selectedCondicion = signal<string | null>(null);
+  estadoSeleccionado = signal<string | null>(null);
   showHallazgoModal = signal(false);
   showObservacionesModal = signal(false);
   observacionesText = signal('');
   notasText = '';
+
+  readonly caras = ['V', 'M', 'D', 'L', 'O'];
+
+  readonly caraLabels: Record<string, string> = {
+    'V': 'Vestibular',
+    'M': 'Mesial',
+    'D': 'Distal',
+    'L': 'Lingual',
+    'O': 'Oclusal'
+  };
 
   private odontogramaId = signal<string | null>(null);
 
@@ -64,6 +75,31 @@ export class OdontogramaGridComponent implements OnInit, OnDestroy {
   private _cuadrante2: PiezaConHallazgo[] = [];
   private _cuadrante3: PiezaConHallazgo[] = [];
   private _cuadrante4: PiezaConHallazgo[] = [];
+
+  getSummaryCount(): { existente: number; requerido: number; realizado: number } {
+    const hall = this.hallazgos();
+    const existente = hall.length;
+    const requerido = hall.filter(h => h.condicionCodigo === 'CARIES').length;
+    const realizado = hall.filter(h => h.condicionCodigo !== 'CARIES').length;
+    return { existente, requerido, realizado };
+  }
+
+  hasCellHallazgos(piezaId: number, caraShort: string): boolean {
+    const caraCodigo = this.getFaceCode(caraShort);
+    const hall = this.hallazgos();
+    return hall.some(h => h.piezaId === piezaId && h.caraCodigo === caraCodigo);
+  }
+
+  getHallazgoForCell(piezaId: number, caraShort: string): HallazgoResponse[] {
+    const caraCodigo = this.getFaceCode(caraShort);
+    const hall = this.hallazgos();
+    return hall.filter(h => h.piezaId === piezaId && h.caraCodigo === caraCodigo);
+  }
+
+  getFilteredHallazgos(piezaId: number | undefined): HallazgoResponse[] {
+    if (!piezaId) return [];
+    return this.hallazgos().filter(h => h.piezaId === piezaId);
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -138,6 +174,20 @@ export class OdontogramaGridComponent implements OnInit, OnDestroy {
 
   getCuadrante4(): PiezaConHallazgo[] {
     return this._cuadrante4;
+  }
+
+  cuadrante1(): PiezaConHallazgo[] { return this._cuadrante1; }
+  cuadrante2(): PiezaConHallazgo[] { return this._cuadrante2; }
+  cuadrante3(): PiezaConHallazgo[] { return this._cuadrante3; }
+  cuadrante4(): PiezaConHallazgo[] { return this._cuadrante4; }
+
+  onPiezaClick(pieza: PiezaDental): void {
+    const item: PiezaConHallazgo = {
+      pieza: pieza,
+      hallazgosPorCara: new Map(),
+      tieneHallazgos: false
+    };
+    this.onToothClick(item);
   }
 
   getFaceColor(item: PiezaConHallazgo, cara: string): string {
