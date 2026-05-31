@@ -1,23 +1,28 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CitaService } from '../../../core/api/cita.service';
+import { AtencionService } from '../../../core/api/atencion.service';
 import { CitaResponse, EstadoCita } from '../../../core/models/cita.model';
+import { AtencionResponse } from '../../../core/models/atencion.model';
 
 @Component({
   selector: 'app-cita-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './cita-detail.component.html',
   styleUrl: './cita-detail.component.css'
 })
 export class CitaDetailComponent implements OnInit {
   private citaService = inject(CitaService);
+  private atencionService = inject(AtencionService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
   loading = signal(true);
   cita = signal<CitaResponse | null>(null);
+  criandoAtencion = signal(false);
+  atencionExistente = signal<AtencionResponse | null>(null);
 
   estadoOptions: { value: EstadoCita; label: string; color: string }[] = [
     { value: 'PROGRAMADA', label: 'Programada', color: 'bg-blue-100 text-blue-700' },
@@ -41,9 +46,21 @@ export class CitaDetailComponent implements OnInit {
       next: (cita) => {
         this.cita.set(cita);
         this.loading.set(false);
+        this.loadAtencionExistente(id);
       },
       error: () => {
         this.loading.set(false);
+      }
+    });
+  }
+
+  loadAtencionExistente(citaId: string): void {
+    this.atencionService.getPorCita(citaId).subscribe({
+      next: (atencion) => {
+        this.atencionExistente.set(atencion);
+      },
+      error: () => {
+        this.atencionExistente.set(null);
       }
     });
   }
@@ -57,6 +74,38 @@ export class CitaDetailComponent implements OnInit {
     if (cita) {
       this.router.navigate(['/citas', cita.id, 'editar']);
     }
+  }
+
+  onCrearAtencion(): void {
+    const cita = this.cita();
+    if (!cita) return;
+
+    if (!confirm('¿Crear atención para esta cita?')) return;
+
+    this.criandoAtencion.set(true);
+    this.atencionService.create({
+      citaId: cita.id,
+      historiaClinicaId: cita.historiaClinicaId,
+      odontologoId: cita.odontologoId,
+      notas: ''
+    }).subscribe({
+      next: (atencion) => {
+        this.criandoAtencion.set(false);
+        this.router.navigate(['/atenciones', atencion.id]);
+      },
+      error: (err) => {
+        this.criandoAtencion.set(false);
+        console.error('Error al crear atención:', err);
+        alert('Error al crear la atención');
+      }
+    });
+  }
+
+  puedeCrearAtencion(): boolean {
+    const cita = this.cita();
+    if (!cita) return false;
+    return (cita.estado === 'CONFIRMADA' || cita.estado === 'EN_CURSO')
+           && !this.atencionExistente();
   }
 
   formatDateTime(isoString: string): string {

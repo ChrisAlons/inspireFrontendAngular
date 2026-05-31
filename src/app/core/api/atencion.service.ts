@@ -26,6 +26,10 @@ export class AtencionService {
     return this.http.get<AtencionResponse[]>(`${this.apiUrl}/por-historia/${historiaClinicaId}`);
   }
 
+  getPorCita(citaId: string): Observable<AtencionResponse> {
+    return this.http.get<AtencionResponse>(`${this.apiUrl}/porcita/${citaId}`);
+  }
+
   create(request: CreateAtencionRequest): Observable<AtencionResponse> {
     return this.http.post<AtencionResponse>(this.apiUrl, request);
   }
