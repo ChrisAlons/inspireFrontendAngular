@@ -1,0 +1,41 @@
+<div class="dashboard">
+  <h1>Dashboard</h1>
+
+  @if (loading()) {
+    <div class="loading">Cargando estadísticas...</div>
+  } @else {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <span class="stat-value">{{ stats().pacientesTotal }}</span>
+          <span class="stat-label">Pacientes registrados</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-content">
+          <span class="stat-value">{{ stats().citasHoy }}</span>
+          <span class="stat-label">Citas hoy</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🩺</div>
+        <div class="stat-content">
+          <span class="stat-value">{{ stats().atencionesEnCurso }}</span>
+          <span class="stat-label">Atenciones en curso</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⏰</div>
+        <div class="stat-content">
+          <span class="stat-value">{{ stats().citasProximas }}</span>
+          <span class="stat-label">Próximas citas</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>

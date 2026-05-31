@@ -1,0 +1,49 @@
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h2>Inspire</h2>
+      <span>Dental</span>
+    </div>
+
+    <ul class="nav-menu">
+      <li>
+        <a routerLink="/dashboard" routerLinkActive="active">
+          <span class="icon">📊</span>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a routerLink="/pacientes" routerLinkActive="active">
+          <span class="icon">👥</span>
+          Pacientes
+        </a>
+      </li>
+      <li>
+        <a routerLink="/citas" routerLinkActive="active">
+          <span class="icon">📅</span>
+          Citas
+        </a>
+      </li>
+      <li>
+        <a routerLink="/atenciones" routerLinkActive="active">
+          <span class="icon">🩺</span>
+          Atenciones
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <span class="user-name">{{ authService.userFullName() }}</span>
+        <span class="user-role">Odontólogo</span>
+      </div>
+      <button (click)="logout()" class="logout-btn">
+        Cerrar sesión
+      </button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet />
+  </main>
+</div>
