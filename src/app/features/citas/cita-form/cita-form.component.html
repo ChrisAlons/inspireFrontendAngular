@@ -1,0 +1,103 @@
+<div class="p-6 max-w-2xl mx-auto">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-semibold text-foreground tracking-tight">
+      {{ isEdit() ? 'Editar Cita' : 'Nueva Cita' }}
+    </h1>
+    <p class="text-sm text-muted-foreground mt-1">
+      {{ isEdit() ? 'Actualiza los datos de la cita' : 'Programa una nueva cita' }}
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div class="flex items-center justify-center py-12">
+      <p class="text-muted-foreground">Cargando datos...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Datos de la Cita -->
+      <div class="bg-card border rounded-xl p-6">
+        <h2 class="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+          <span>📅</span> Datos de la Cita
+        </h2>
+
+        <div class="space-y-4">
+          <!-- Paciente -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Paciente</label>
+            <app-paciente-select
+              (pacienteSeleccionado)="onPacienteSeleccionado($event)"
+            ></app-paciente-select>
+            @if (!validatePaciente() && form.touched) {
+              <p class="text-xs text-destructive">El paciente es requerido</p>
+            }
+          </div>
+
+          <!-- Odontologo (hidden, auto-filled) -->
+          <input type="hidden" formControlName="odontologoId">
+
+          <!-- Fecha y Hora Inicio -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-foreground">Fecha y Hora Inicio</label>
+              <input
+                type="datetime-local"
+                formControlName="fechaHoraInicio"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+              @if (hasError('fechaHoraInicio', 'required')) {
+                <p class="text-xs text-destructive">La fecha de inicio es requerida</p>
+              }
+            </div>
+
+            <!-- Fecha y Hora Fin -->
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-foreground">Fecha y Hora Fin</label>
+              <input
+                type="datetime-local"
+                formControlName="fechaHoraFin"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+              @if (hasError('fechaHoraFin', 'required')) {
+                <p class="text-xs text-destructive">La fecha de fin es requerida</p>
+              }
+            </div>
+          </div>
+
+          <!-- Motivo -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Motivo / Observaciones</label>
+            <textarea
+              formControlName="motivo"
+              rows="3"
+              class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Ej: Dolor de muela, limpieza general..."
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium rounded-md border border-input bg-background hover:bg-accent transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+        >
+          @if (saving()) {
+            <span>Guardando...</span>
+          } @else {
+            <span>{{ isEdit() ? 'Actualizar' : 'Programar Cita' }}</span>
+          }
+        </button>
+      </div>
+    </form>
+  }
+</div>

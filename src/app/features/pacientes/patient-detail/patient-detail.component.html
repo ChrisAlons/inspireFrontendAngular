@@ -1,0 +1,160 @@
+<div class="p-6 max-w-4xl mx-auto">
+  @if (loading()) {
+    <div class="flex items-center justify-center py-12">
+      <p class="text-muted-foreground">Cargando datos del paciente...</p>
+    </div>
+  } @else if (paciente()) {
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-semibold text-foreground tracking-tight">
+          {{ paciente()!.nombres }} {{ paciente()!.apellidoPaterno }} {{ paciente()!.apellidoMaterno }}
+        </h1>
+        <p class="text-sm text-muted-foreground mt-1">
+          Código: <span class="font-mono">{{ paciente()!.codigoHistoria }}</span>
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button
+          (click)="onBack()"
+          class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium rounded-md border border-input bg-background hover:bg-accent transition-colors"
+        >
+          ← Volver
+        </button>
+        <button
+          (click)="onEdit()"
+          class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          ✏️ Editar
+        </button>
+      </div>
+    </div>
+
+    <!-- Datos Personales -->
+    <div class="bg-card border rounded-xl p-6 mb-4">
+      <h2 class="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+        <span>👤</span> Datos Personales
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Documento</p>
+          <p class="text-sm font-medium text-foreground">{{ paciente()!.tipoDocumentoCodigo }} {{ paciente()!.numeroDocumento }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Fecha de Nacimiento</p>
+          <p class="text-sm font-medium text-foreground">{{ formatDate(paciente()!.fechaNacimiento) }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Sexo</p>
+          <p class="text-sm font-medium text-foreground">{{ getSexoLabel(paciente()!.sexoCodigo) }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Estado Civil</p>
+          <p class="text-sm font-medium text-foreground">{{ paciente()!.estadoCivilCodigo }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datos de Contacto -->
+    <div class="bg-card border rounded-xl p-6 mb-4">
+      <h2 class="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+        <span>📱</span> Datos de Contacto
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Celular</p>
+          <p class="text-sm font-medium text-foreground">{{ paciente()!.celular || '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Email</p>
+          <p class="text-sm font-medium text-foreground">{{ paciente()!.email || '-' }}</p>
+        </div>
+        <div class="col-span-2 md:col-span-3">
+          <p class="text-xs text-muted-foreground mb-1">Dirección</p>
+          <p class="text-sm font-medium text-foreground">{{ paciente()!.direccion || '-' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información Adicional -->
+    <div class="bg-card border rounded-xl p-6 mb-4">
+      <h2 class="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+        <span>📋</span> Información Adicional
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Grado de Instrucción</p>
+          <p class="text-sm font-medium text-foreground">{{ paciente()!.gradoInstruccionCodigo }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Ocupación</p>
+          <p class="text-sm font-medium text-foreground">{{ paciente()!.ocupacion || '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Lugar de Nacimiento</p>
+          <p class="text-sm font-medium text-foreground">{{ paciente()!.lugarNacimiento || '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Procedencia</p>
+          <p class="text-sm font-medium text-foreground">{{ paciente()!.procedencia || '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Viajes Último Año</p>
+          <p class="text-sm font-medium text-foreground">{{ paciente()!.viajesUltimoAnio || '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-muted-foreground mb-1">Estado</p>
+          <p class="text-sm font-medium text-foreground">
+            @if (paciente()!.isActive) {
+              <span class="text-green-600">Activo</span>
+            } @else {
+              <span class="text-red-600">Inactivo</span>
+            }
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datos Clínicos -->
+    <div class="bg-card border rounded-xl p-6 mb-4">
+      <h2 class="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+        <span>🦷</span> Datos Clínicos
+      </h2>
+      <div class="flex flex-wrap gap-3">
+        @if (paciente()!.historiaClinicaId) {
+          <a
+            [routerLink]="['/odontogramas']"
+            [queryParams]="{historiaClinicaId: paciente()!.historiaClinicaId}"
+            class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            🦷 Ver Odontogramas
+          </a>
+          <a
+            [routerLink]="['/atenciones']"
+            [queryParams]="{historiaClinicaId: paciente()!.historiaClinicaId}"
+            class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+          >
+            🩺 Ver Atenciones
+          </a>
+        } @else {
+          <p class="text-sm text-muted-foreground">Este paciente aún no tiene historia clínica.</p>
+        }
+      </div>
+    </div>
+
+    <!-- Fecha de Registro -->
+    <div class="text-xs text-muted-foreground text-right">
+      Registrado el {{ formatDate(paciente()!.createdAt) }}
+    </div>
+  } @else {
+    <div class="bg-card border rounded-xl p-12 text-center">
+      <p class="text-muted-foreground">No se encontró el paciente</p>
+      <button
+        (click)="onBack()"
+        class="mt-4 inline-flex items-center justify-center h-9 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+      >
+        Volver a la lista
+      </button>
+    </div>
+  }
+</div>

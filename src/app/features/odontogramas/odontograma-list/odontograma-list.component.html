@@ -1,0 +1,92 @@
+<div class="p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-4">
+      <div>
+        <h1 class="text-2xl font-semibold text-foreground tracking-tight">Odontogramas</h1>
+        <p class="text-sm text-muted-foreground mt-1">
+          {{ odontogramas().length }} registros
+        </p>
+      </div>
+    </div>
+    @if (historiaClinicaId()) {
+      <button
+        (click)="onNewOdontograma()"
+        class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+      >
+        <span class="mr-2">➕</span>
+        Nuevo Odontograma
+      </button>
+    }
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex items-center justify-center py-12">
+      <p class="text-muted-foreground">Cargando odontogramas...</p>
+    </div>
+  } @else if (!historiaClinicaId()) {
+    <div class="bg-card border rounded-xl p-12 text-center">
+      <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+        🦷
+      </div>
+      <h3 class="text-lg font-medium text-foreground mb-2">Sin historia clínica</h3>
+      <p class="text-sm text-muted-foreground">
+        Selecciona un paciente con historia clínica para ver sus odontogramas
+      </p>
+    </div>
+  } @else if (odontogramas().length === 0) {
+    <div class="bg-card border rounded-xl p-12 text-center">
+      <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+        🦷
+      </div>
+      <h3 class="text-lg font-medium text-foreground mb-2">No hay odontogramas</h3>
+      <p class="text-sm text-muted-foreground mb-6">
+        Registra el primer odontograma para este paciente
+      </p>
+      <button
+        (click)="onNewOdontograma()"
+        class="inline-flex items-center justify-center h-9 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+      >
+        <span class="mr-2">➕</span>
+        Crear Odontograma
+      </button>
+    </div>
+  } @else {
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      @for (odonto of odontogramas(); track odonto.id) {
+        <div
+          (click)="onViewOdontograma(odonto)"
+          class="bg-card border rounded-xl p-4 cursor-pointer hover:shadow-md hover:border-primary/50 transition-all"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                  [class.bg-blue-100]="odonto.isInicial"
+                  [class.text-blue-700]="odonto.isInicial"
+                  [class.bg-amber-100]="!odonto.isInicial"
+                  [class.text-amber-700]="!odonto.isInicial">
+              {{ getTipoLabel(odonto.isInicial) }}
+            </span>
+            <span class="text-xs text-muted-foreground">
+              {{ formatDate(odonto.fecha) }}
+            </span>
+          </div>
+
+          @if (odonto.observaciones) {
+            <p class="text-sm text-foreground line-clamp-2 mb-3">
+              {{ odonto.observaciones }}
+            </p>
+          } @else {
+            <p class="text-sm text-muted-foreground italic mb-3">
+              Sin observaciones
+            </p>
+          }
+
+          <div class="text-xs text-muted-foreground">
+            Creado: {{ formatDate(odonto.createdAt) }}
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

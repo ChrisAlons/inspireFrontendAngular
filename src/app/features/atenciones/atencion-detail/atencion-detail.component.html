@@ -1,0 +1,143 @@
+<div class="p-6 max-w-3xl mx-auto">
+  @if (loading()) {
+    <div class="flex items-center justify-center py-12">
+      <p class="text-muted-foreground">Cargando atención...</p>
+    </div>
+  } @else if (atencion(); as a) {
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <button
+        (click)="onBack()"
+        class="inline-flex items-center justify-center h-9 px-3 py-2 text-sm font-medium rounded-md border border-input bg-background hover:bg-accent transition-colors"
+      >
+        ← Volver
+      </button>
+      @if (!isClosed()) {
+        <button
+          (click)="onCerrar()"
+          class="inline-flex items-center justify-center h-9 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          Cerrar Atención
+        </button>
+      }
+    </div>
+
+    <!-- Atencion Card -->
+    <div class="bg-card border rounded-xl overflow-hidden mb-6">
+      <!-- Header -->
+      <div class="px-6 py-4 border-b bg-muted/50 flex items-center justify-between">
+        <h1 class="text-lg font-semibold text-foreground">Detalle de Atención</h1>
+        @if (isClosed()) {
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700">
+            Cerrada
+          </span>
+        } @else {
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
+            En Curso
+          </span>
+        }
+      </div>
+
+      <!-- Content -->
+      <div class="p-6">
+        <div class="grid grid-cols-2 gap-6">
+          <!-- Fecha Inicio -->
+          <div class="space-y-1">
+            <p class="text-xs text-muted-foreground uppercase tracking-wider">Fecha Inicio</p>
+            <p class="text-sm font-medium text-foreground">
+              {{ formatDateTime(a.fechaInicio) }}
+            </p>
+          </div>
+
+          <!-- Fecha Fin -->
+          <div class="space-y-1">
+            <p class="text-xs text-muted-foreground uppercase tracking-wider">Fecha Fin</p>
+            <p class="text-sm font-medium text-foreground">
+              {{ formatDateTime(a.fechaFin) }}
+            </p>
+          </div>
+
+          <!-- Cita ID -->
+          <div class="space-y-1">
+            <p class="text-xs text-muted-foreground uppercase tracking-wider">Cita ID</p>
+            <p class="text-sm font-medium text-foreground">{{ a.citaId }}</p>
+          </div>
+
+          <!-- Historia Clinica ID -->
+          <div class="space-y-1">
+            <p class="text-xs text-muted-foreground uppercase tracking-wider">Historia Clínica ID</p>
+            <p class="text-sm font-medium text-foreground">{{ a.historiaClinicaId }}</p>
+          </div>
+
+          <!-- Notas -->
+          <div class="col-span-2 space-y-1">
+            <p class="text-xs text-muted-foreground uppercase tracking-wider">Notas</p>
+            <p class="text-sm text-foreground whitespace-pre-wrap">{{ a.notas || 'Sin notas' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Planes de Tratamiento Section -->
+    <div class="bg-card border rounded-xl overflow-hidden">
+      <div class="px-6 py-4 border-b bg-muted/50 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-foreground">Planes de Tratamiento</h2>
+        <button
+          (click)="onCrearPlan()"
+          class="inline-flex items-center justify-center h-8 px-3 py-1 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          + Nuevo Plan
+        </button>
+      </div>
+
+      <div class="p-6">
+        @if (loadingPlanes()) {
+          <div class="flex items-center justify-center py-8">
+            <p class="text-muted-foreground">Cargando planes...</p>
+          </div>
+        } @else if (planes().length === 0) {
+          <div class="text-center py-8">
+            <p class="text-muted-foreground mb-4">No hay planes de tratamiento para esta atención</p>
+            <button
+              (click)="onCrearPlan()"
+              class="inline-flex items-center justify-center h-9 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Crear Plan de Tratamiento
+            </button>
+          </div>
+        } @else {
+          <div class="space-y-3">
+            @for (plan of planes(); track plan.id) {
+              <div
+                (click)="onVerPlan(plan.id)"
+                class="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 cursor-pointer transition-colors"
+              >
+                <div class="flex items-center gap-4">
+                  <span
+                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium text-white"
+                    [style.background-color]="getEstadoColor(plan.estado)"
+                  >
+                    {{ getEstadoLabel(plan.estado) }}
+                  </span>
+                  <div>
+                    <p class="text-sm font-medium">{{ plan.montoTotal | currency:'PEN':'S/ ' }}</p>
+                    <p class="text-xs text-muted-foreground">{{ plan.observaciones || 'Sin observaciones' }}</p>
+                  </div>
+                </div>
+                <button
+                  class="inline-flex items-center justify-center h-8 px-3 py-1 text-sm font-medium rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+                >
+                  Ver
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="text-center py-12">
+      <p class="text-muted-foreground">Atención no encontrada</p>
+    </div>
+  }
+</div>

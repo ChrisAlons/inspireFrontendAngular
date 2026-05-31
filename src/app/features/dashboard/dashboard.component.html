@@ -1,41 +1,118 @@
-<div class="dashboard">
-  <h1>Dashboard</h1>
+<div class="p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-semibold text-foreground tracking-tight">Dashboard</h1>
+    <p class="text-sm text-muted-foreground mt-1">Resumen de actividad de la clínica</p>
+  </div>
 
   @if (loading()) {
-    <div class="loading">Cargando estadísticas...</div>
+    <div class="flex items-center justify-center py-12">
+      <p class="text-muted-foreground">Cargando estadísticas...</p>
+    </div>
   } @else {
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">👥</div>
-        <div class="stat-content">
-          <span class="stat-value">{{ stats().pacientesTotal }}</span>
-          <span class="stat-label">Pacientes registrados</span>
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <!-- Pacientes Card -->
+      <div class="bg-card border rounded-xl p-6 shadow-sm">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-xl">
+            👥
+          </div>
+          <div>
+            <p class="text-3xl font-semibold text-foreground">{{ stats().pacientesTotal }}</p>
+            <p class="text-sm text-muted-foreground">Pacientes registrados</p>
+          </div>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon">📅</div>
-        <div class="stat-content">
-          <span class="stat-value">{{ stats().citasHoy }}</span>
-          <span class="stat-label">Citas hoy</span>
+      <!-- Citas Hoy Card -->
+      <div class="bg-card border rounded-xl p-6 shadow-sm">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-xl">
+            📅
+          </div>
+          <div>
+            <p class="text-3xl font-semibold text-foreground">{{ stats().citasHoy }}</p>
+            <p class="text-sm text-muted-foreground">Citas hoy</p>
+          </div>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon">🩺</div>
-        <div class="stat-content">
-          <span class="stat-value">{{ stats().atencionesEnCurso }}</span>
-          <span class="stat-label">Atenciones en curso</span>
+      <!-- Atenciones Card -->
+      <div class="bg-card border rounded-xl p-6 shadow-sm">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-xl">
+            🩺
+          </div>
+          <div>
+            <p class="text-3xl font-semibold text-foreground">{{ stats().atencionesEnCurso }}</p>
+            <p class="text-sm text-muted-foreground">Atenciones en curso</p>
+          </div>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon">⏰</div>
-        <div class="stat-content">
-          <span class="stat-value">{{ stats().citasProximas }}</span>
-          <span class="stat-label">Próximas citas</span>
+      <!-- Próximas Card -->
+      <div class="bg-card border rounded-xl p-6 shadow-sm">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center text-xl">
+            ⏰
+          </div>
+          <div>
+            <p class="text-3xl font-semibold text-foreground">{{ stats().citasProximas }}</p>
+            <p class="text-sm text-muted-foreground">Próximos 7 días</p>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Quick Actions Section -->
+    <div class="bg-card border rounded-xl p-6">
+      <h2 class="text-lg font-semibold text-foreground mb-4">Acciones rápidas</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Nuevo Paciente -->
+        <a
+          routerLink="/pacientes"
+          class="flex items-center gap-4 p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors group"
+        >
+          <div class="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center text-lg group-hover:bg-primary/20 transition-colors">
+            ➕
+          </div>
+          <div>
+            <p class="text-sm font-medium text-foreground">Nuevo Paciente</p>
+            <p class="text-xs text-muted-foreground">Registrar paciente</p>
+          </div>
+        </a>
+
+        <!-- Nueva Cita -->
+        <a
+          routerLink="/citas"
+          class="flex items-center gap-4 p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors group"
+        >
+          <div class="w-11 h-11 rounded-lg bg-emerald-500/10 flex items-center justify-center text-lg group-hover:bg-emerald-500/20 transition-colors">
+            📆
+          </div>
+          <div>
+            <p class="text-sm font-medium text-foreground">Nueva Cita</p>
+            <p class="text-xs text-muted-foreground">Programar cita</p>
+          </div>
+        </a>
+
+        <!-- Buscar Paciente -->
+        <a
+          routerLink="/atenciones"
+          class="flex items-center gap-4 p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors group"
+        >
+          <div class="w-11 h-11 rounded-lg bg-amber-500/10 flex items-center justify-center text-lg group-hover:bg-amber-500/20 transition-colors">
+            🔍
+          </div>
+          <div>
+            <p class="text-sm font-medium text-foreground">Buscar Paciente</p>
+            <p class="text-xs text-muted-foreground">Ver historias clínicas</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    
   }
 </div>

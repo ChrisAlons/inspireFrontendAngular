@@ -1,0 +1,250 @@
+<div class="p-6 max-w-4xl mx-auto">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-semibold text-foreground tracking-tight">
+      {{ isEdit() ? 'Editar Paciente' : 'Nuevo Paciente' }}
+    </h1>
+    <p class="text-sm text-muted-foreground mt-1">
+      {{ isEdit() ? 'Actualiza los datos del paciente' : 'Ingresa los datos del nuevo paciente' }}
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div class="flex items-center justify-center py-12">
+      <p class="text-muted-foreground">Cargando datos...</p>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Datos Personales -->
+      <div class="bg-card border rounded-xl p-6">
+        <h2 class="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+          <span>👤</span> Datos Personales
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Tipo Documento -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Tipo de Documento</label>
+            <select
+              formControlName="tipoDocumentoCodigo"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              @for (opt of tipoDocumentoOptions; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Número Documento -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Número de Documento</label>
+            <input
+              type="text"
+              formControlName="numeroDocumento"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              [class.border-destructive]="hasError('numeroDocumento', 'required') || hasError('numeroDocumento', 'minlength')"
+              placeholder="Ej: 87654321"
+            >
+            @if (hasError('numeroDocumento', 'required')) {
+              <p class="text-xs text-destructive">El número de documento es requerido</p>
+            }
+            @if (hasError('numeroDocumento', 'minlength')) {
+              <p class="text-xs text-destructive">Mínimo 8 caracteres</p>
+            }
+          </div>
+
+          <!-- Nombres -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Nombres</label>
+            <input
+              type="text"
+              formControlName="nombres"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              [class.border-destructive]="hasError('nombres', 'required')"
+              placeholder="Ej: María Elena"
+            >
+            @if (hasError('nombres', 'required')) {
+              <p class="text-xs text-destructive">Los nombres son requeridos</p>
+            }
+          </div>
+
+          <!-- Apellido Paterno -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Apellido Paterno</label>
+            <input
+              type="text"
+              formControlName="apellidoPaterno"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              [class.border-destructive]="hasError('apellidoPaterno', 'required')"
+              placeholder="Ej: García"
+            >
+          </div>
+
+          <!-- Apellido Materno -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Apellido Materno</label>
+            <input
+              type="text"
+              formControlName="apellidoMaterno"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Ej: López"
+            >
+          </div>
+
+          <!-- Fecha Nacimiento -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Fecha de Nacimiento</label>
+            <input
+              type="date"
+              formControlName="fechaNacimiento"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              [class.border-destructive]="hasError('fechaNacimiento', 'required')"
+            >
+          </div>
+
+          <!-- Sexo -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Sexo</label>
+            <select
+              formControlName="sexoCodigo"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              @for (opt of sexoOptions; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Estado Civil -->
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Estado Civil</label>
+            <select
+              formControlName="estadoCivilCodigo"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              @for (opt of estadoCivilOptions; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos de Contacto -->
+      <div class="bg-card border rounded-xl p-6">
+        <h2 class="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+          <span>📱</span> Datos de Contacto
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Celular</label>
+            <input
+              type="text"
+              formControlName="celular"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Ej: 999888777"
+            >
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Email</label>
+            <input
+              type="email"
+              formControlName="email"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              [class.border-destructive]="hasError('email', 'email')"
+              placeholder="Ej: paciente@email.com"
+            >
+            @if (hasError('email', 'email')) {
+              <p class="text-xs text-destructive">Ingrese un email válido</p>
+            }
+          </div>
+
+          <div class="md:col-span-2 space-y-2">
+            <label class="text-sm font-medium text-foreground">Dirección</label>
+            <input
+              type="text"
+              formControlName="direccion"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Ej: Av. Los Álamos 456, Lima"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos del Paciente -->
+      <div class="bg-card border rounded-xl p-6">
+        <h2 class="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+          <span>📋</span> Información Adicional
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Grado de Instrucción</label>
+            <select
+              formControlName="gradoInstruccionCodigo"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              @for (opt of gradoInstruccionOptions; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Ocupación</label>
+            <input
+              type="text"
+              formControlName="ocupacion"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Ej: Contadora"
+            >
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Lugar de Nacimiento</label>
+            <input
+              type="text"
+              formControlName="lugarNacimiento"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Ej: Lima"
+            >
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Procedencia</label>
+            <input
+              type="text"
+              formControlName="procedencia"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Ej: Lima"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium rounded-md border border-input bg-background hover:bg-accent transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+        >
+          @if (saving()) {
+            <span>Guardando...</span>
+          } @else {
+            <span>{{ isEdit() ? 'Actualizar' : 'Guardar' }}</span>
+          }
+        </button>
+      </div>
+    </form>
+  }
+</div>

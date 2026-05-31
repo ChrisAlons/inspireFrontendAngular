@@ -1,0 +1,77 @@
+<div class="p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-semibold text-foreground tracking-tight">Atenciones en Curso</h1>
+      <p class="text-sm text-muted-foreground mt-1">
+        {{ atenciones().length }} atenciones activas
+      </p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex items-center justify-center py-12">
+      <p class="text-muted-foreground">Cargando atenciones...</p>
+    </div>
+  } @else if (atenciones().length === 0) {
+    <!-- Empty State -->
+    <div class="bg-card border rounded-xl p-12 text-center">
+      <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+        🏥
+      </div>
+      <h3 class="text-lg font-medium text-foreground mb-2">No hay atenciones en curso</h3>
+      <p class="text-sm text-muted-foreground mb-6">
+        Las atenciones se crean al iniciar una cita
+      </p>
+    </div>
+  } @else {
+    <!-- Atenciones Grid -->
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      @for (atencion of atenciones(); track atencion.id) {
+        <div class="bg-card border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+          <div class="p-4">
+            <div class="flex items-center justify-between mb-3">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                En Curso
+              </span>
+              <span class="text-xs text-muted-foreground">
+                {{ getDuracion(atencion.fechaInicio) }}
+              </span>
+            </div>
+
+            <div class="space-y-2 mb-4">
+              <p class="text-xs text-muted-foreground">
+                <span class="font-medium">Inicio:</span> {{ formatDateTime(atencion.fechaInicio) }}
+              </p>
+              <p class="text-xs text-muted-foreground">
+                <span class="font-medium">Cita ID:</span> {{ atencion.citaId }}
+              </p>
+            </div>
+
+            @if (atencion.notas) {
+              <p class="text-sm text-foreground line-clamp-2 mb-4">
+                {{ atencion.notas }}
+              </p>
+            }
+
+            <div class="flex items-center gap-2">
+              <button
+                (click)="onViewAtencion(atencion.id)"
+                class="flex-1 inline-flex items-center justify-center h-8 px-3 py-1 text-xs font-medium rounded-md border border-input bg-background hover:bg-accent transition-colors"
+              >
+                Ver Detalle
+              </button>
+              <button
+                (click)="onCerrarAtencion(atencion)"
+                class="flex-1 inline-flex items-center justify-center h-8 px-3 py-1 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

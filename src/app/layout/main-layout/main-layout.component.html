@@ -1,49 +1,94 @@
-<div class="layout">
-  <nav class="sidebar">
-    <div class="sidebar-header">
-      <h2>Inspire</h2>
-      <span>Dental</span>
+<div class="flex h-screen w-full bg-background">
+  <!-- Sidebar - Teal Medical Theme -->
+  <aside class="w-64 bg-primary flex flex-col text-primary-foreground">
+    <!-- Header with Logo -->
+    <div class="h-16 flex items-center gap-3 px-5 border-b border-primary/20">
+      <div class="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center text-lg backdrop-blur-sm">
+        🦷
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold">Inspire</h2>
+        <p class="text-xs text-primary-foreground/70">Dental Clinic</p>
+      </div>
     </div>
 
-    <ul class="nav-menu">
-      <li>
-        <a routerLink="/dashboard" routerLinkActive="active">
-          <span class="icon">📊</span>
-          Dashboard
-        </a>
-      </li>
-      <li>
-        <a routerLink="/pacientes" routerLinkActive="active">
-          <span class="icon">👥</span>
-          Pacientes
-        </a>
-      </li>
-      <li>
-        <a routerLink="/citas" routerLinkActive="active">
-          <span class="icon">📅</span>
-          Citas
-        </a>
-      </li>
-      <li>
-        <a routerLink="/atenciones" routerLinkActive="active">
-          <span class="icon">🩺</span>
-          Atenciones
-        </a>
-      </li>
-    </ul>
+    <!-- Navigation -->
+    <nav class="flex-1 py-4 px-3 space-y-1">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="bg-white/20 font-semibold"
+        class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-white/15 transition-colors"
+      >
+        <span class="text-base">📊</span>
+        Dashboard
+      </a>
+      <a
+        routerLink="/pacientes"
+        routerLinkActive="bg-white/20 font-semibold"
+        class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-white/15 transition-colors"
+      >
+        <span class="text-base">👥</span>
+        Pacientes
+      </a>
+      <a
+        routerLink="/citas"
+        routerLinkActive="bg-white/20 font-semibold"
+        class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-white/15 transition-colors"
+      >
+        <span class="text-base">📅</span>
+        Citas
+      </a>
+      <a
+        routerLink="/atenciones"
+        routerLinkActive="bg-white/20 font-semibold"
+        class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-white/15 transition-colors"
+      >
+        <span class="text-base">🩺</span>
+        Atenciones
+      </a>
+      <a
+        routerLink="/odontogramas"
+        routerLinkActive="bg-white/20 font-semibold"
+        class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-white/15 transition-colors"
+      >
+        <span class="text-base">🦷</span>
+        Odontogramas
+      </a>
+      <a
+        routerLink="/planes-tratamiento"
+        routerLinkActive="bg-white/20 font-semibold"
+        class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-white/15 transition-colors"
+      >
+        <span class="text-base">📋</span>
+        Planes de Tratamiento
+      </a>
+    </nav>
 
-    <div class="sidebar-footer">
-      <div class="user-info">
-        <span class="user-name">{{ authService.userFullName() }}</span>
-        <span class="user-role">Odontólogo</span>
+    <!-- Footer with User -->
+    <div class="p-4 border-t border-primary/20">
+      <div class="bg-white/10 rounded-lg p-3 mb-3 backdrop-blur-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-white/20 rounded-md flex items-center justify-center text-sm font-semibold">
+            {{ authService.userFullName().charAt(0) }}
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-medium truncate">{{ authService.userFullName() }}</p>
+            <p class="text-xs text-primary-foreground/70">Odontólogo</p>
+          </div>
+        </div>
       </div>
-      <button (click)="logout()" class="logout-btn">
+      <button
+        (click)="logout()"
+        class="inline-flex items-center justify-center w-full h-9 px-3 py-2 text-sm font-medium rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+      >
+        <span class="mr-2">🚪</span>
         Cerrar sesión
       </button>
     </div>
-  </nav>
+  </aside>
 
-  <main class="main-content">
+  <!-- Main Content -->
+  <main class="flex-1 overflow-y-auto bg-background">
     <router-outlet />
   </main>
 </div>
